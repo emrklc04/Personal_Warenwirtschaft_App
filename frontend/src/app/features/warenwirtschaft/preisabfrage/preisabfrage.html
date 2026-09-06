@@ -1,0 +1,41 @@
+<h2>Preisabfrage</h2>
+
+<div class="card search-card">
+  <label for="suche">Barcode oder Artikelname</label>
+  <input
+    id="suche"
+    type="text"
+    placeholder="z. B. 4001724819185 oder Milch"
+    [ngModel]="suchbegriff()"
+    (ngModelChange)="suchbegriff.set($event)"
+  />
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Barcode</th>
+        <th>Bezeichnung</th>
+        <th>Preis</th>
+        <th>Einheit</th>
+        <th>Bestand in meiner Filiale</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (artikel of treffer(); track artikel.id) {
+        <tr>
+          <td>{{ artikel.barcode }}</td>
+          <td>{{ artikel.bezeichnung }}</td>
+          <td>{{ artikel.preis | currency: 'EUR' }}</td>
+          <td>{{ artikel.einheit }}</td>
+          <td>{{ bestand(artikel.id) }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5">Keine Artikel gefunden.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

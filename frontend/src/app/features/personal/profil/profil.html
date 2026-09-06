@@ -1,0 +1,49 @@
+<h2>Mein Profil</h2>
+
+<div class="card">
+  <div class="profil-grid">
+    <div>
+      <span class="label">Name</span>
+      <span class="value">{{ currentUser()?.vorname }} {{ currentUser()?.nachname }}</span>
+    </div>
+    <div>
+      <span class="label">Benutzername</span>
+      <span class="value">{{ currentUser()?.benutzername }}</span>
+    </div>
+    <div>
+      <span class="label">Position</span>
+      <span class="value">{{ currentUser()?.position }}</span>
+    </div>
+    <div>
+      <span class="label">Rolle(n)</span>
+      <span class="value">{{ rollenLabel() }}</span>
+    </div>
+    <div>
+      <span class="label">Filiale</span>
+      <span class="value">{{ filialeName() }}</span>
+    </div>
+    <div>
+      <span class="label">Eintrittsdatum</span>
+      <span class="value">{{ currentUser()?.eintrittsdatum | date: 'dd.MM.yyyy' }}</span>
+    </div>
+  </div>
+</div>
+
+<h3>Kontaktdaten bearbeiten</h3>
+<div class="card">
+  <form (ngSubmit)="speichern()">
+    <label for="email">E-Mail-Adresse</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)"
+      required
+    />
+    @if (gespeichert()) {
+      <p class="success">Änderungen gespeichert.</p>
+    }
+    <button class="btn" type="submit">Speichern</button>
+  </form>
+</div>

@@ -1,0 +1,62 @@
+<div class="login-page">
+  <div class="login-card">
+    <h1>Personal- &amp; Warenwirtschaft</h1>
+    <p class="subtitle">Bitte melden Sie sich an</p>
+
+    <form (ngSubmit)="anmelden()">
+      <label for="benutzername">Benutzername</label>
+      <input
+        id="benutzername"
+        name="benutzername"
+        type="text"
+        autocomplete="username"
+        [ngModel]="benutzername()"
+        (ngModelChange)="benutzername.set($event)"
+        required
+      />
+
+      <label for="passwort">Passwort</label>
+      <input
+        id="passwort"
+        name="passwort"
+        type="password"
+        autocomplete="current-password"
+        [ngModel]="passwort()"
+        (ngModelChange)="passwort.set($event)"
+        required
+      />
+
+      @if (fehler()) {
+        <p class="error">Benutzername oder Passwort ist falsch.</p>
+      }
+
+      <button type="submit">Anmelden</button>
+    </form>
+
+    <div class="demo-accounts">
+      <p>Demo-Konten (Passwort jeweils <code>test123</code>):</p>
+      <ul>
+        <li>
+          <button type="button" (click)="schnellAnmeldung('max.mustermann')">
+            Max Mustermann &ndash; Mitarbeiter
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="schnellAnmeldung('erika.musterfrau')">
+            Erika Musterfrau &ndash; Filialleiterin
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="schnellAnmeldung('hannah.huber')">
+            Hannah Huber &ndash; HR
+          </button>
+        </li>
+        <li>
+          <button type="button" (click)="schnellAnmeldung('alex.admin')">
+            Alex Admin &ndash; Admin
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

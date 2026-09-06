@@ -1,1 +1,146 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primary: #2c3e50;
+  --color-primary-light: #34495e;
+  --color-accent: #2980b9;
+  --color-success: #2e7d32;
+  --color-danger: #c0392b;
+  --color-warning: #b7791f;
+  --color-bg: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-border: #dfe3e8;
+  --color-text: #1a1a1a;
+  --color-text-muted: #5f6b76;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --font-sans: 'Segoe UI', Calibri, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--color-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--color-primary);
+  color: #fff;
+  transition: background 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--color-primary-light);
+}
+
+.btn:disabled {
+  background: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.btn.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.btn.btn-outline:hover {
+  background: var(--color-bg);
+}
+
+.btn.btn-danger {
+  background: var(--color-danger);
+}
+
+.btn.btn-danger:hover {
+  background: #a5311f;
+}
+
+.btn.btn-success {
+  background: var(--color-success);
+}
+
+.btn.btn-success:hover {
+  background: #245c27;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-offen {
+  background: #fdf3d8;
+  color: var(--color-warning);
+}
+
+.badge-genehmigt,
+.badge-abgeschlossen {
+  background: #e2f3e4;
+  color: var(--color-success);
+}
+
+.badge-abgelehnt {
+  background: #fbe4e1;
+  color: var(--color-danger);
+}
+
+.badge-laufend {
+  background: #e3edf7;
+  color: var(--color-accent);
+}

@@ -1,0 +1,92 @@
+<h2>Abschreibung</h2>
+
+@if (kannBuchen()) {
+  <h3>Neue Abschreibung buchen</h3>
+  <div class="card">
+    <form (ngSubmit)="buchen()">
+      <label for="artikel">Artikel</label>
+      <select
+        id="artikel"
+        name="artikel"
+        [ngModel]="ausgewaehlterArtikelId()"
+        (ngModelChange)="ausgewaehlterArtikelId.set($event)"
+        required
+      >
+        <option [ngValue]="null" disabled>Bitte wählen…</option>
+        @for (a of artikel(); track a.id) {
+          <option [ngValue]="a.id">{{ a.bezeichnung }}</option>
+        }
+      </select>
+
+      <div class="form-row">
+        <div>
+          <label for="menge">Menge</label>
+          <input
+            id="menge"
+            name="menge"
+            type="number"
+            min="1"
+            [ngModel]="menge()"
+            (ngModelChange)="menge.set($event)"
+            required
+          />
+        </div>
+        <div>
+          <label for="grund">Grund</label>
+          <select id="grund" name="grund" [ngModel]="grund()" (ngModelChange)="grund.set($event)">
+            @for (g of gruende; track g) {
+              <option [value]="g">{{ grundLabel(g) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <label for="bemerkung">Bemerkung</label>
+      <textarea
+        id="bemerkung"
+        name="bemerkung"
+        rows="2"
+        [ngModel]="bemerkung()"
+        (ngModelChange)="bemerkung.set($event)"
+      ></textarea>
+
+      @if (erfolgsmeldung()) {
+        <p class="success">Abschreibung wurde gebucht.</p>
+      }
+
+      <button class="btn" type="submit">Abschreibung buchen</button>
+    </form>
+  </div>
+}
+
+<h3>Abschreibungen meiner Filiale</h3>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Datum</th>
+        <th>Artikel</th>
+        <th>Menge</th>
+        <th>Grund</th>
+        <th>Wert</th>
+        <th>Gebucht von</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of liste(); track a.id) {
+        <tr>
+          <td>{{ a.erstelltAm | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>{{ artikelBezeichnung(a.artikelId) }}</td>
+          <td>{{ a.menge }}</td>
+          <td>{{ grundLabel(a.grund) }}</td>
+          <td>{{ wert(a.artikelId, a.menge) | currency: 'EUR' }}</td>
+          <td>{{ mitarbeiterName(a.erstelltVon) }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6">Keine Abschreibungen vorhanden.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

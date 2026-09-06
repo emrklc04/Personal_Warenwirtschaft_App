@@ -1,0 +1,77 @@
+<h2>Zeiterfassung</h2>
+
+<div class="card status-card">
+  @if (istEingestempelt()) {
+    <div class="status-row">
+      <p class="status status-active">
+        Eingestempelt seit {{ aktiverEintrag()?.kommen | date: 'HH:mm' }} Uhr
+      </p>
+      <button class="btn btn-danger" (click)="gehen()">Gehen</button>
+    </div>
+  } @else {
+    <div class="status-row">
+      <p class="status status-inactive">Aktuell nicht eingestempelt</p>
+      <button class="btn btn-success" (click)="kommen()">Kommen</button>
+    </div>
+  }
+</div>
+
+<h3>Meine letzten Buchungen</h3>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Datum</th>
+        <th>Kommen</th>
+        <th>Gehen</th>
+        <th>Dauer</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (eintrag of eigeneEintraege(); track eintrag.id) {
+        <tr>
+          <td>{{ eintrag.kommen | date: 'dd.MM.yyyy' }}</td>
+          <td>{{ eintrag.kommen | date: 'HH:mm' }}</td>
+          <td>{{ eintrag.gehen ? (eintrag.gehen | date: 'HH:mm') : '—' }}</td>
+          <td>{{ dauer(eintrag.kommen, eintrag.gehen) }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4">Noch keine Buchungen vorhanden.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (zeigeTeam()) {
+  <h3>Team-Übersicht</h3>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Filiale</th>
+          <th>Status</th>
+          <th>Seit</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (zeile of team(); track zeile.mitarbeiter.id) {
+          <tr>
+            <td>{{ zeile.mitarbeiter.vorname }} {{ zeile.mitarbeiter.nachname }}</td>
+            <td>{{ filialeName(zeile.mitarbeiter.filialeId) }}</td>
+            <td>
+              @if (zeile.eingestempelt) {
+                <span class="badge badge-laufend">Eingestempelt</span>
+              } @else {
+                <span class="badge">Nicht eingestempelt</span>
+              }
+            </td>
+            <td>{{ zeile.seit ? (zeile.seit | date: 'HH:mm') : '—' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

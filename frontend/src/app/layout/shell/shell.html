@@ -1,0 +1,30 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">Personal- &amp; Warenwirtschaft</div>
+    <nav>
+      <div class="nav-group">Personalmanagement</div>
+      <a routerLink="/personal/zeiterfassung" routerLinkActive="active">Zeiterfassung</a>
+      <a routerLink="/personal/zeitkorrekturen" routerLinkActive="active">Zeitkorrekturen</a>
+      <a routerLink="/personal/profil" routerLinkActive="active">Mein Profil</a>
+
+      <div class="nav-group">Warenwirtschaft</div>
+      <a routerLink="/warenwirtschaft/preisabfrage" routerLinkActive="active">Preisabfrage</a>
+      <a routerLink="/warenwirtschaft/inventur" routerLinkActive="active">Inventur</a>
+      <a routerLink="/warenwirtschaft/abschreibung" routerLinkActive="active">Abschreibung</a>
+    </nav>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="user-info">
+        <span class="user-name">{{ currentUser()?.vorname }} {{ currentUser()?.nachname }}</span>
+        <span class="user-meta">{{ rollenLabel() }} &middot; {{ filialeName() }}</span>
+      </div>
+      <button class="btn btn-outline" (click)="logout()">Abmelden</button>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

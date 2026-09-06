@@ -1,0 +1,142 @@
+<h2>Zeitkorrekturen</h2>
+
+<h3>Neuen Antrag stellen</h3>
+<div class="card">
+  <form (ngSubmit)="antragAbsenden()">
+    <label for="eintrag">Betroffene Buchung</label>
+    <select
+      id="eintrag"
+      name="eintrag"
+      [ngModel]="ausgewaehlterEintragId()"
+      (ngModelChange)="eintragAuswaehlen($event)"
+      required
+    >
+      <option [ngValue]="null" disabled>Bitte wählen…</option>
+      @for (eintrag of eigeneEintraege(); track eintrag.id) {
+        <option [ngValue]="eintrag.id">{{ eintragBeschriftung(eintrag.id) }}</option>
+      }
+    </select>
+
+    <div class="form-row">
+      <div>
+        <label for="kommen">Gewünschtes Kommen</label>
+        <input
+          id="kommen"
+          name="kommen"
+          type="datetime-local"
+          [ngModel]="gewuenschtesKommen()"
+          (ngModelChange)="gewuenschtesKommen.set($event)"
+          required
+        />
+      </div>
+      <div>
+        <label for="gehen">Gewünschtes Gehen (optional)</label>
+        <input
+          id="gehen"
+          name="gehen"
+          type="datetime-local"
+          [ngModel]="gewuenschtesGehen()"
+          (ngModelChange)="gewuenschtesGehen.set($event)"
+        />
+      </div>
+    </div>
+
+    <label for="grund">Begründung</label>
+    <textarea
+      id="grund"
+      name="grund"
+      rows="2"
+      [ngModel]="grund()"
+      (ngModelChange)="grund.set($event)"
+      required
+    ></textarea>
+
+    @if (erfolgsmeldung()) {
+      <p class="success">Antrag wurde eingereicht.</p>
+    }
+
+    <button class="btn" type="submit">Antrag einreichen</button>
+  </form>
+</div>
+
+<h3>Meine Anträge</h3>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Erstellt am</th>
+        <th>Gewünschtes Kommen</th>
+        <th>Gewünschtes Gehen</th>
+        <th>Grund</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (antrag of eigeneAntraege(); track antrag.id) {
+        <tr>
+          <td>{{ antrag.erstelltAm | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>{{ antrag.gewuenschtesKommen | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>
+            {{ antrag.gewuenschtesGehen ? (antrag.gewuenschtesGehen | date: 'dd.MM.yyyy HH:mm') : '—' }}
+          </td>
+          <td>{{ antrag.grund }}</td>
+          <td>
+            <span
+              class="badge"
+              [class.badge-offen]="antrag.status === 'OFFEN'"
+              [class.badge-genehmigt]="antrag.status === 'GENEHMIGT'"
+              [class.badge-abgelehnt]="antrag.status === 'ABGELEHNT'"
+            >
+              {{ antrag.status }}
+            </span>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5">Keine Anträge vorhanden.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (istGenehmiger()) {
+  <h3>Offene Anträge zur Genehmigung</h3>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Mitarbeiter</th>
+          <th>Gewünschtes Kommen</th>
+          <th>Gewünschtes Gehen</th>
+          <th>Grund</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (antrag of offeneAntraege(); track antrag.id) {
+          <tr>
+            <td>{{ mitarbeiterName(antrag.mitarbeiterId) }}</td>
+            <td>{{ antrag.gewuenschtesKommen | date: 'dd.MM.yyyy HH:mm' }}</td>
+            <td>
+              {{
+                antrag.gewuenschtesGehen
+                  ? (antrag.gewuenschtesGehen | date: 'dd.MM.yyyy HH:mm')
+                  : '—'
+              }}
+            </td>
+            <td>{{ antrag.grund }}</td>
+            <td class="actions">
+              <button class="btn btn-success" (click)="genehmigen(antrag.id)">Genehmigen</button>
+              <button class="btn btn-danger" (click)="ablehnen(antrag.id)">Ablehnen</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5">Keine offenen Anträge.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
