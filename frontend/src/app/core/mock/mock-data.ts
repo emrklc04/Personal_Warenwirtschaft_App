@@ -1,11 +1,34 @@
-import { Arbeitszeiteintrag, Filiale, Korrekturantrag, Mitarbeiter } from '../models/personal.model';
-import { Abschreibung, Artikel, Inventur, InventurEintrag, Lagerbestand } from '../models/warenwirtschaft.model';
+import {
+  Arbeitszeiteintrag,
+  Filiale,
+  Korrekturantrag,
+  Mitarbeiter,
+  Urlaubsantrag,
+} from '../models/personal.model';
+import {
+  Abschreibung,
+  Artikel,
+  Bestellung,
+  Inventur,
+  InventurEintrag,
+  Lagerbestand,
+} from '../models/warenwirtschaft.model';
 
 function vorTagenUm(tageZurueck: number, stunde: number, minute: number): string {
   const d = new Date();
   d.setDate(d.getDate() - tageZurueck);
   d.setHours(stunde, minute, 0, 0);
   return d.toISOString();
+}
+
+function datumInTagen(tage: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + tage);
+  return d.toISOString().slice(0, 10);
+}
+
+function datumVorTagen(tage: number): string {
+  return datumInTagen(-tage);
 }
 
 export const MOCK_FILIALEN: Filiale[] = [
@@ -25,6 +48,8 @@ export const MOCK_MITARBEITER: Mitarbeiter[] = [
     rollen: ['MITARBEITER'],
     filialeId: 1,
     eintrittsdatum: '2022-03-01',
+    aktiv: true,
+    urlaubsanspruchTage: 25,
   },
   {
     id: 2,
@@ -36,6 +61,8 @@ export const MOCK_MITARBEITER: Mitarbeiter[] = [
     rollen: ['FILIALLEITER'],
     filialeId: 1,
     eintrittsdatum: '2018-06-15',
+    aktiv: true,
+    urlaubsanspruchTage: 25,
   },
   {
     id: 3,
@@ -47,6 +74,8 @@ export const MOCK_MITARBEITER: Mitarbeiter[] = [
     rollen: ['HR'],
     filialeId: 3,
     eintrittsdatum: '2019-09-01',
+    aktiv: true,
+    urlaubsanspruchTage: 25,
   },
   {
     id: 4,
@@ -58,6 +87,8 @@ export const MOCK_MITARBEITER: Mitarbeiter[] = [
     rollen: ['ADMIN'],
     filialeId: 3,
     eintrittsdatum: '2017-01-10',
+    aktiv: true,
+    urlaubsanspruchTage: 25,
   },
   {
     id: 5,
@@ -69,6 +100,8 @@ export const MOCK_MITARBEITER: Mitarbeiter[] = [
     rollen: ['MITARBEITER'],
     filialeId: 2,
     eintrittsdatum: '2023-11-20',
+    aktiv: true,
+    urlaubsanspruchTage: 25,
   },
   {
     id: 6,
@@ -80,6 +113,8 @@ export const MOCK_MITARBEITER: Mitarbeiter[] = [
     rollen: ['FILIALLEITER'],
     filialeId: 2,
     eintrittsdatum: '2020-04-05',
+    aktiv: true,
+    urlaubsanspruchTage: 25,
   },
 ];
 
@@ -120,15 +155,51 @@ export const MOCK_KORREKTURANTRAEGE: Korrekturantrag[] = [
   },
 ];
 
+export const MOCK_URLAUBSANTRAEGE: Urlaubsantrag[] = [
+  {
+    id: 1,
+    mitarbeiterId: 1,
+    von: datumInTagen(20),
+    bis: datumInTagen(24),
+    kommentar: 'Sommerurlaub mit der Familie.',
+    status: 'OFFEN',
+    erstelltAm: vorTagenUm(2, 9, 0),
+    bearbeitetVon: null,
+    bearbeitetAm: null,
+  },
+  {
+    id: 2,
+    mitarbeiterId: 1,
+    von: datumVorTagen(60),
+    bis: datumVorTagen(56),
+    kommentar: 'Kurztrip.',
+    status: 'GENEHMIGT',
+    erstelltAm: datumVorTagen(70),
+    bearbeitetVon: 2,
+    bearbeitetAm: datumVorTagen(69),
+  },
+  {
+    id: 3,
+    mitarbeiterId: 5,
+    von: datumInTagen(10),
+    bis: datumInTagen(12),
+    kommentar: 'Verlängertes Wochenende.',
+    status: 'OFFEN',
+    erstelltAm: vorTagenUm(1, 14, 0),
+    bearbeitetVon: null,
+    bearbeitetAm: null,
+  },
+];
+
 export const MOCK_ARTIKEL: Artikel[] = [
-  { id: 1, barcode: '4001724819185', bezeichnung: 'Vollmilch 1L', preis: 1.19, einheit: 'Stk' },
-  { id: 2, barcode: '4009900427116', bezeichnung: 'Butter 250g', preis: 2.49, einheit: 'Stk' },
-  { id: 3, barcode: '4088600123456', bezeichnung: 'Toastbrot 500g', preis: 1.79, einheit: 'Stk' },
-  { id: 4, barcode: '4311501247891', bezeichnung: 'Bio-Eier 10er', preis: 3.29, einheit: 'Stk' },
-  { id: 5, barcode: '4104420033445', bezeichnung: 'Bananen', preis: 1.99, einheit: 'kg' },
-  { id: 6, barcode: '4000521234567', bezeichnung: 'Kaffee gemahlen 500g', preis: 5.99, einheit: 'Stk' },
-  { id: 7, barcode: '4306180101010', bezeichnung: 'Küchenrolle 3er', preis: 2.29, einheit: 'Stk' },
-  { id: 8, barcode: '4003994155486', bezeichnung: 'Nudeln Penne 500g', preis: 0.89, einheit: 'Stk' },
+  { id: 1, barcode: '4001724819185', bezeichnung: 'Vollmilch 1L', preis: 1.19, einheit: 'Stk', mindestbestand: 20 },
+  { id: 2, barcode: '4009900427116', bezeichnung: 'Butter 250g', preis: 2.49, einheit: 'Stk', mindestbestand: 15 },
+  { id: 3, barcode: '4088600123456', bezeichnung: 'Toastbrot 500g', preis: 1.79, einheit: 'Stk', mindestbestand: 20 },
+  { id: 4, barcode: '4311501247891', bezeichnung: 'Bio-Eier 10er', preis: 3.29, einheit: 'Stk', mindestbestand: 15 },
+  { id: 5, barcode: '4104420033445', bezeichnung: 'Bananen', preis: 1.99, einheit: 'kg', mindestbestand: 25 },
+  { id: 6, barcode: '4000521234567', bezeichnung: 'Kaffee gemahlen 500g', preis: 5.99, einheit: 'Stk', mindestbestand: 10 },
+  { id: 7, barcode: '4306180101010', bezeichnung: 'Küchenrolle 3er', preis: 2.29, einheit: 'Stk', mindestbestand: 16 },
+  { id: 8, barcode: '4003994155486', bezeichnung: 'Nudeln Penne 500g', preis: 0.89, einheit: 'Stk', mindestbestand: 20 },
 ];
 
 export const MOCK_LAGERBESTAND: Lagerbestand[] = [
@@ -180,5 +251,28 @@ export const MOCK_ABSCHREIBUNGEN: Abschreibung[] = [
     bemerkung: 'Verpackung beim Einräumen beschädigt.',
     erstelltVon: 2,
     erstelltAm: vorTagenUm(3, 14, 30),
+  },
+];
+
+export const MOCK_BESTELLUNGEN: Bestellung[] = [
+  {
+    id: 1,
+    filialeId: 1,
+    artikelId: 7,
+    menge: 40,
+    status: 'OFFEN',
+    bestelltVon: 2,
+    bestelltAm: vorTagenUm(1, 11, 0),
+    eingetroffenAm: null,
+  },
+  {
+    id: 2,
+    filialeId: 2,
+    artikelId: 4,
+    menge: 30,
+    status: 'EINGETROFFEN',
+    bestelltVon: 6,
+    bestelltAm: vorTagenUm(6, 9, 0),
+    eingetroffenAm: vorTagenUm(4, 10, 0),
   },
 ];

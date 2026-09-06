@@ -36,6 +36,8 @@ export class Shell {
     (this.currentUser()?.rollen ?? []).map((r) => ROLLEN_LABEL[r]).join(', '),
   );
 
+  protected readonly istZentral = computed(() => this.authService.hasAnyRole('HR', 'ADMIN'));
+
   protected logout(): void {
     this.authService.logout();
     this.router.navigateByUrl('/login');

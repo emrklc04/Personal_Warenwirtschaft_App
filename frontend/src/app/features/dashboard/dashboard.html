@@ -1,0 +1,73 @@
+<h2>Übersicht</h2>
+<p class="greeting">Willkommen zurück, {{ currentUser()?.vorname }}!</p>
+
+<div class="tile-grid">
+  <a class="tile" routerLink="/personal/zeiterfassung">
+    <span class="tile-label">Zeiterfassung</span>
+    @if (istEingestempelt()) {
+      <span class="tile-value tile-positive">Eingestempelt</span>
+      <span class="tile-hint">seit {{ aktiverEintrag()?.kommen | date: 'HH:mm' }} Uhr</span>
+    } @else {
+      <span class="tile-value">Nicht eingestempelt</span>
+    }
+  </a>
+
+  <a class="tile" routerLink="/personal/urlaub">
+    <span class="tile-label">Resturlaub</span>
+    <span class="tile-value">{{ restUrlaub() }} Tage</span>
+  </a>
+
+  @if (istGenehmiger()) {
+    <a
+      class="tile"
+      routerLink="/personal/zeitkorrekturen"
+      [class.tile-alert]="offeneZeitkorrekturen() > 0"
+    >
+      <span class="tile-label">Offene Zeitkorrekturen</span>
+      <span class="tile-value">{{ offeneZeitkorrekturen() }}</span>
+    </a>
+
+    <a class="tile" routerLink="/personal/urlaub" [class.tile-alert]="offeneUrlaubsantraege() > 0">
+      <span class="tile-label">Offene Urlaubsanträge</span>
+      <span class="tile-value">{{ offeneUrlaubsantraege() }}</span>
+    </a>
+  }
+
+  @if (istFilialverwalter()) {
+    <a
+      class="tile"
+      routerLink="/warenwirtschaft/lagerbestand"
+      [class.tile-alert]="artikelUnterMindestbestand() > 0"
+    >
+      <span class="tile-label">Artikel unter Mindestbestand</span>
+      <span class="tile-value">{{ artikelUnterMindestbestand() }}</span>
+    </a>
+
+    <a
+      class="tile"
+      routerLink="/warenwirtschaft/bestellungen"
+      [class.tile-alert]="offeneBestellungen() > 0"
+    >
+      <span class="tile-label">Offene Bestellungen</span>
+      <span class="tile-value">{{ offeneBestellungen() }}</span>
+    </a>
+
+    <a class="tile" routerLink="/warenwirtschaft/inventur">
+      <span class="tile-label">Inventur</span>
+      @if (laufendeInventur(); as inv) {
+        <span class="tile-value tile-positive">Läuft</span>
+        <span class="tile-hint">seit {{ inv.stichtag | date: 'dd.MM.yyyy' }}</span>
+      } @else {
+        <span class="tile-value">Keine aktive Inventur</span>
+      }
+    </a>
+  }
+
+  @if (istZentral()) {
+    <a class="tile" routerLink="/personal/mitarbeiterverwaltung">
+      <span class="tile-label">Mitarbeiter</span>
+      <span class="tile-value">{{ mitarbeiterAktiv() }} / {{ mitarbeiterGesamt() }}</span>
+      <span class="tile-hint">aktiv / gesamt</span>
+    </a>
+  }
+</div>

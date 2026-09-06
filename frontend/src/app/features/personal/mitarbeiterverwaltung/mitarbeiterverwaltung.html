@@ -1,0 +1,150 @@
+<h2>Mitarbeiterverwaltung</h2>
+
+<h3>Neuen Mitarbeiter anlegen</h3>
+<div class="card">
+  <form (ngSubmit)="mitarbeiterAnlegen()">
+    <div class="form-row">
+      <div>
+        <label for="vorname">Vorname</label>
+        <input
+          id="vorname"
+          name="vorname"
+          type="text"
+          [ngModel]="vorname()"
+          (ngModelChange)="vorname.set($event)"
+          required
+        />
+      </div>
+      <div>
+        <label for="nachname">Nachname</label>
+        <input
+          id="nachname"
+          name="nachname"
+          type="text"
+          [ngModel]="nachname()"
+          (ngModelChange)="nachname.set($event)"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label for="benutzername">Benutzername</label>
+        <input
+          id="benutzername"
+          name="benutzername"
+          type="text"
+          [ngModel]="benutzername()"
+          (ngModelChange)="benutzername.set($event)"
+          required
+        />
+      </div>
+      <div>
+        <label for="email">E-Mail</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label for="position">Position</label>
+        <input
+          id="position"
+          name="position"
+          type="text"
+          placeholder="z. B. Verkäufer"
+          [ngModel]="position()"
+          (ngModelChange)="position.set($event)"
+        />
+      </div>
+      <div>
+        <label for="filiale">Filiale</label>
+        <select
+          id="filiale"
+          name="filiale"
+          [ngModel]="filialeId()"
+          (ngModelChange)="filialeId.set($event)"
+          required
+        >
+          <option [ngValue]="null" disabled>Bitte wählen…</option>
+          @for (f of filialen(); track f.id) {
+            <option [ngValue]="f.id">{{ f.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <fieldset>
+      <legend>Rollen</legend>
+      @for (rolle of alleRollen; track rolle) {
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="istRolleAusgewaehlt(rolle)"
+            (change)="rolleUmschalten(rolle, $any($event.target).checked)"
+          />
+          {{ rolle }}
+        </label>
+      }
+    </fieldset>
+
+    @if (fehlermeldung()) {
+      <p class="error">{{ fehlermeldung() }}</p>
+    }
+    @if (erfolgsmeldung()) {
+      <p class="success">Mitarbeiter wurde angelegt (Login mit Passwort „test123“ sofort möglich).</p>
+    }
+
+    <button class="btn" type="submit">Mitarbeiter anlegen</button>
+  </form>
+</div>
+
+<h3>Alle Mitarbeiter</h3>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Benutzername</th>
+        <th>Position</th>
+        <th>Rolle(n)</th>
+        <th>Filiale</th>
+        <th>Eintrittsdatum</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (m of mitarbeiter(); track m.id) {
+        <tr>
+          <td>{{ m.vorname }} {{ m.nachname }}</td>
+          <td>{{ m.benutzername }}</td>
+          <td>{{ m.position }}</td>
+          <td>{{ rollenLabel(m.rollen) }}</td>
+          <td>{{ filialeName(m.filialeId) }}</td>
+          <td>{{ m.eintrittsdatum | date: 'dd.MM.yyyy' }}</td>
+          <td>
+            @if (m.aktiv) {
+              <span class="badge badge-genehmigt">Aktiv</span>
+            } @else {
+              <span class="badge badge-abgelehnt">Inaktiv</span>
+            }
+          </td>
+          <td>
+            <button class="btn btn-outline" (click)="statusUmschalten(m.id, m.aktiv)">
+              {{ m.aktiv ? 'Deaktivieren' : 'Reaktivieren' }}
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

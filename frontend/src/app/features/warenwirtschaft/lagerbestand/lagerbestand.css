@@ -1,0 +1,50 @@
+h2 {
+  margin-bottom: 1rem;
+}
+
+.summary-card {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.summary-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+}
+
+.value {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.value-danger {
+  color: var(--color-danger);
+}
+
+td,
+th {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+th {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.row-warning td {
+  background: #fdf3d8;
+}

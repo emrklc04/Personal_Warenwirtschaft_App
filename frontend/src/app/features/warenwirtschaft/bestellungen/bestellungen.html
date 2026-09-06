@@ -1,0 +1,91 @@
+<h2>Bestellungen</h2>
+
+@if (kannVerwalten()) {
+  <h3>Neue Bestellung aufgeben</h3>
+  <div class="card">
+    <form (ngSubmit)="bestellen()">
+      <label for="artikel">Artikel</label>
+      <select
+        id="artikel"
+        name="artikel"
+        [ngModel]="ausgewaehlterArtikelId()"
+        (ngModelChange)="ausgewaehlterArtikelId.set($event)"
+        required
+      >
+        <option [ngValue]="null" disabled>Bitte wählen…</option>
+        @for (a of artikel(); track a.id) {
+          <option [ngValue]="a.id">
+            {{ a.bezeichnung }} (aktuell {{ bestandAktuell(a.id) }} {{ a.einheit }})
+          </option>
+        }
+      </select>
+
+      <label for="menge">Menge</label>
+      <input
+        id="menge"
+        name="menge"
+        type="number"
+        min="1"
+        [ngModel]="menge()"
+        (ngModelChange)="menge.set($event)"
+        required
+      />
+
+      @if (erfolgsmeldung()) {
+        <p class="success">Bestellung wurde aufgegeben.</p>
+      }
+
+      <button class="btn" type="submit">Bestellung aufgeben</button>
+    </form>
+  </div>
+}
+
+<h3>Bestellungen meiner Filiale</h3>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Bestellt am</th>
+        <th>Artikel</th>
+        <th>Menge</th>
+        <th>Status</th>
+        <th>Eingetroffen am</th>
+        @if (kannVerwalten()) {
+          <th></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (b of bestellungen(); track b.id) {
+        <tr>
+          <td>{{ b.bestelltAm | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>{{ artikelBezeichnung(b.artikelId) }}</td>
+          <td>{{ b.menge }}</td>
+          <td>
+            <span
+              class="badge"
+              [class.badge-offen]="b.status === 'OFFEN'"
+              [class.badge-genehmigt]="b.status === 'EINGETROFFEN'"
+            >
+              {{ b.status }}
+            </span>
+          </td>
+          <td>{{ b.eingetroffenAm ? (b.eingetroffenAm | date: 'dd.MM.yyyy HH:mm') : '—' }}</td>
+          @if (kannVerwalten()) {
+            <td>
+              @if (b.status === 'OFFEN') {
+                <button class="btn btn-success" (click)="wareneingangBuchen(b.id)">
+                  Wareneingang buchen
+                </button>
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6">Keine Bestellungen vorhanden.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

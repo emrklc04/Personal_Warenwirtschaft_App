@@ -16,6 +16,8 @@ export interface Mitarbeiter {
   rollen: Rolle[];
   filialeId: number;
   eintrittsdatum: string;
+  aktiv: boolean;
+  urlaubsanspruchTage: number;
 }
 
 export interface Arbeitszeiteintrag {
@@ -35,6 +37,20 @@ export interface Korrekturantrag {
   gewuenschtesGehen: string | null;
   grund: string;
   status: KorrekturStatus;
+  erstelltAm: string;
+  bearbeitetVon: number | null;
+  bearbeitetAm: string | null;
+}
+
+export type UrlaubStatus = 'OFFEN' | 'GENEHMIGT' | 'ABGELEHNT';
+
+export interface Urlaubsantrag {
+  id: number;
+  mitarbeiterId: number;
+  von: string;
+  bis: string;
+  kommentar: string;
+  status: UrlaubStatus;
   erstelltAm: string;
   bearbeitetVon: number | null;
   bearbeitetAm: string | null;

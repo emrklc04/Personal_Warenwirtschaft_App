@@ -10,13 +10,15 @@ interface DemoCredential {
 
 // Demo-Zugangsdaten, solange kein Backend mit echter Authentifizierung existiert.
 // Passwort für alle Demo-Konten: "test123"
+const STANDARD_DEMO_PASSWORT = 'test123';
+
 const DEMO_CREDENTIALS: DemoCredential[] = [
-  { benutzername: 'max.mustermann', passwort: 'test123', mitarbeiterId: 1 },
-  { benutzername: 'erika.musterfrau', passwort: 'test123', mitarbeiterId: 2 },
-  { benutzername: 'hannah.huber', passwort: 'test123', mitarbeiterId: 3 },
-  { benutzername: 'alex.admin', passwort: 'test123', mitarbeiterId: 4 },
-  { benutzername: 'peter.petrov', passwort: 'test123', mitarbeiterId: 5 },
-  { benutzername: 'sonja.sommer', passwort: 'test123', mitarbeiterId: 6 },
+  { benutzername: 'max.mustermann', passwort: STANDARD_DEMO_PASSWORT, mitarbeiterId: 1 },
+  { benutzername: 'erika.musterfrau', passwort: STANDARD_DEMO_PASSWORT, mitarbeiterId: 2 },
+  { benutzername: 'hannah.huber', passwort: STANDARD_DEMO_PASSWORT, mitarbeiterId: 3 },
+  { benutzername: 'alex.admin', passwort: STANDARD_DEMO_PASSWORT, mitarbeiterId: 4 },
+  { benutzername: 'peter.petrov', passwort: STANDARD_DEMO_PASSWORT, mitarbeiterId: 5 },
+  { benutzername: 'sonja.sommer', passwort: STANDARD_DEMO_PASSWORT, mitarbeiterId: 6 },
 ];
 
 const STORAGE_KEY = 'pww_current_mitarbeiter_id';
@@ -24,6 +26,8 @@ const STORAGE_KEY = 'pww_current_mitarbeiter_id';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly mitarbeiterService = inject(MitarbeiterService);
+
+  private readonly credentials = signal<DemoCredential[]>(DEMO_CREDENTIALS);
 
   private readonly currentMitarbeiterId = signal<number | null>(this.readStoredId());
 
@@ -35,7 +39,7 @@ export class AuthService {
   readonly isAuthenticated = computed(() => this.currentUser() !== null);
 
   login(benutzername: string, passwort: string): boolean {
-    const credential = DEMO_CREDENTIALS.find(
+    const credential = this.credentials().find(
       (c) => c.benutzername === benutzername.trim().toLowerCase() && c.passwort === passwort,
     );
     if (!credential) {
@@ -44,6 +48,13 @@ export class AuthService {
     this.currentMitarbeiterId.set(credential.mitarbeiterId);
     localStorage.setItem(STORAGE_KEY, String(credential.mitarbeiterId));
     return true;
+  }
+
+  registerCredential(benutzername: string, mitarbeiterId: number, passwort = STANDARD_DEMO_PASSWORT): void {
+    this.credentials.update((list) => [
+      ...list,
+      { benutzername: benutzername.trim().toLowerCase(), passwort, mitarbeiterId },
+    ]);
   }
 
   logout(): void {

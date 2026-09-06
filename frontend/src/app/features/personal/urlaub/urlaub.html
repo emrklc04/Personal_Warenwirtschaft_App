@@ -1,0 +1,140 @@
+<h2>Urlaub</h2>
+
+<div class="card summary-card">
+  <div>
+    <span class="label">Urlaubsanspruch</span>
+    <span class="value">{{ currentUser()?.urlaubsanspruchTage }} Tage</span>
+  </div>
+  <div>
+    <span class="label">Bereits genommen</span>
+    <span class="value">{{ genommeneTage() }} Tage</span>
+  </div>
+  <div>
+    <span class="label">Resturlaub</span>
+    <span class="value value-accent">{{ restTage() }} Tage</span>
+  </div>
+</div>
+
+<h3>Neuen Antrag stellen</h3>
+<div class="card">
+  <form (ngSubmit)="antragAbsenden()">
+    <div class="form-row">
+      <div>
+        <label for="von">Von</label>
+        <input
+          id="von"
+          name="von"
+          type="date"
+          [ngModel]="von()"
+          (ngModelChange)="von.set($event)"
+          required
+        />
+      </div>
+      <div>
+        <label for="bis">Bis</label>
+        <input
+          id="bis"
+          name="bis"
+          type="date"
+          [ngModel]="bis()"
+          (ngModelChange)="bis.set($event)"
+          required
+        />
+      </div>
+    </div>
+
+    <label for="kommentar">Kommentar (optional)</label>
+    <textarea
+      id="kommentar"
+      name="kommentar"
+      rows="2"
+      [ngModel]="kommentar()"
+      (ngModelChange)="kommentar.set($event)"
+    ></textarea>
+
+    @if (fehlermeldung()) {
+      <p class="error">Das Enddatum darf nicht vor dem Startdatum liegen.</p>
+    }
+    @if (erfolgsmeldung()) {
+      <p class="success">Antrag wurde eingereicht.</p>
+    }
+
+    <button class="btn" type="submit">Antrag einreichen</button>
+  </form>
+</div>
+
+<h3>Meine Anträge</h3>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Von</th>
+        <th>Bis</th>
+        <th>Tage</th>
+        <th>Kommentar</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (antrag of eigeneAntraege(); track antrag.id) {
+        <tr>
+          <td>{{ antrag.von | date: 'dd.MM.yyyy' }}</td>
+          <td>{{ antrag.bis | date: 'dd.MM.yyyy' }}</td>
+          <td>{{ tage(antrag.von, antrag.bis) }}</td>
+          <td>{{ antrag.kommentar || '—' }}</td>
+          <td>
+            <span
+              class="badge"
+              [class.badge-offen]="antrag.status === 'OFFEN'"
+              [class.badge-genehmigt]="antrag.status === 'GENEHMIGT'"
+              [class.badge-abgelehnt]="antrag.status === 'ABGELEHNT'"
+            >
+              {{ antrag.status }}
+            </span>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5">Keine Anträge vorhanden.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (istGenehmiger()) {
+  <h3>Offene Urlaubsanträge zur Genehmigung</h3>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Mitarbeiter</th>
+          <th>Von</th>
+          <th>Bis</th>
+          <th>Tage</th>
+          <th>Kommentar</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (antrag of offeneAntraege(); track antrag.id) {
+          <tr>
+            <td>{{ mitarbeiterName(antrag.mitarbeiterId) }}</td>
+            <td>{{ antrag.von | date: 'dd.MM.yyyy' }}</td>
+            <td>{{ antrag.bis | date: 'dd.MM.yyyy' }}</td>
+            <td>{{ tage(antrag.von, antrag.bis) }}</td>
+            <td>{{ antrag.kommentar || '—' }}</td>
+            <td class="actions">
+              <button class="btn btn-success" (click)="genehmigen(antrag.id)">Genehmigen</button>
+              <button class="btn btn-danger" (click)="ablehnen(antrag.id)">Ablehnen</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6">Keine offenen Anträge.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

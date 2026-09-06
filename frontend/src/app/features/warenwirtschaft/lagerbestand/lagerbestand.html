@@ -1,0 +1,45 @@
+<h2>Lagerbestand</h2>
+
+<div class="card summary-card">
+  <div>
+    <span class="label">Artikel unter Mindestbestand</span>
+    <span class="value" [class.value-danger]="anzahlUnterMindestbestand() > 0">
+      {{ anzahlUnterMindestbestand() }}
+    </span>
+  </div>
+  <div>
+    <span class="label">Gesamtwert Lager</span>
+    <span class="value">{{ gesamtwert() | currency: 'EUR' }}</span>
+  </div>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Artikel</th>
+        <th>Bestand</th>
+        <th>Mindestbestand</th>
+        <th>Einzelpreis</th>
+        <th>Warenwert</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (z of zeilen(); track z.artikelId) {
+        <tr [class.row-warning]="z.unterMindestbestand">
+          <td>{{ z.bezeichnung }}</td>
+          <td>{{ z.bestand }} {{ z.einheit }}</td>
+          <td>{{ z.mindestbestand }} {{ z.einheit }}</td>
+          <td>{{ z.preis | currency: 'EUR' }}</td>
+          <td>{{ z.bestand * z.preis | currency: 'EUR' }}</td>
+          <td>
+            @if (z.unterMindestbestand) {
+              <span class="badge badge-abgelehnt">Nachbestellen</span>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

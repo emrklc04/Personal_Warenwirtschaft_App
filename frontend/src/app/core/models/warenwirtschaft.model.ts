@@ -4,6 +4,7 @@ export interface Artikel {
   bezeichnung: string;
   preis: number;
   einheit: string;
+  mindestbestand: number;
 }
 
 export interface Lagerbestand {
@@ -41,4 +42,17 @@ export interface Abschreibung {
   bemerkung: string;
   erstelltVon: number;
   erstelltAm: string;
+}
+
+export type BestellungStatus = 'OFFEN' | 'EINGETROFFEN';
+
+export interface Bestellung {
+  id: number;
+  filialeId: number;
+  artikelId: number;
+  menge: number;
+  status: BestellungStatus;
+  bestelltVon: number;
+  bestelltAm: string;
+  eingetroffenAm: string | null;
 }
